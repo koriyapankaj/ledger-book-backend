@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AccountController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BudgetController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\TransactionController;
@@ -33,4 +34,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('transactions', TransactionController::class);
     Route::get('/transactions-statistics', [TransactionController::class, 'statistics']);
     Route::get('/transactions-spending-by-category', [TransactionController::class, 'spendingByCategory']);
+
+    // Budget Routes
+    Route::apiResource('budgets', BudgetController::class);
 });

@@ -68,12 +68,12 @@ class Contact extends Model
         return $this->save();
     }
 
-    public function owesYou(): bool
+    public function hasPositiveBalance(): bool
     {
         return $this->balance > 0;
     }
 
-    public function youOwe(): bool
+    public function hasNegativeBalance(): bool
     {
         return $this->balance < 0;
     }

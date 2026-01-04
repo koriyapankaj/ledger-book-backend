@@ -34,7 +34,7 @@ class AccountController extends Controller
             $query->active();
         }
 
-        $accounts = $query->orderBy('create_at', 'desc')->get();
+        $accounts = $query->orderBy('created_at', 'desc')->get();
 
         return response()->json([
             'accounts' => AccountResource::collection($accounts),

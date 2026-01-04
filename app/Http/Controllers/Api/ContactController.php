@@ -23,10 +23,10 @@ class ContactController extends Controller
         if ($request->has('status')) {
             switch ($request->status) {
                 case 'owes_you':
-                    $query->owesYou();
+                    $query->hasPositiveBalance();
                     break;
                 case 'you_owe':
-                    $query->youOwe();
+                    $query->hasNegativeBalance();
                     break;
                 case 'settled':
                     $query->settled();
