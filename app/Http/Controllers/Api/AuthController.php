@@ -64,7 +64,7 @@ class AuthController extends Controller
         // SCENARIO A: Mobile App
         // Request sends explicit flag "is_mobile": true
         // =========================================================
-        if ($request->boolean('is_mobile')) {
+        if (true || $request->boolean('is_mobile')) {
             $token = $user->createToken('android_device')->plainTextToken;
 
             return response()->json([

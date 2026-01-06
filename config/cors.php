@@ -19,7 +19,12 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['http://localhost:5173', 'http://localhost:3000'],
+    'allowed_origins' => [
+        // 'http://localhost:5173', 
+        // 'http://localhost:3000',
+        'https://ledgerbook.live', 
+        'https://www.ledgerbook.live'
+    ],
 
     'allowed_origins_patterns' => [],
 
