@@ -21,6 +21,7 @@ class Budget extends Model
         'start_date',
         'end_date',
         'is_active',
+        'include_subcategories',
     ];
 
     protected $casts = [
@@ -28,6 +29,7 @@ class Budget extends Model
         'start_date' => 'date',
         'end_date' => 'date',
         'is_active' => 'boolean',
+        'include_subcategories' => 'boolean',
     ];
 
     // Relationships
@@ -60,14 +62,34 @@ class Budget extends Model
     // Helper Methods
     public function getSpentAmount(): float
     {
-        return Transaction::where('user_id', $this->user_id)
-            ->where('category_id', $this->category_id)
+        $query = Transaction::withoutUserScope()
+            ->where('user_id', $this->user_id)
             ->where('type', 'expense')
             ->whereBetween('transaction_date', [
                 $this->start_date,
                 $this->end_date ?? now()
-            ])
-            ->sum('amount');
+            ]);
+
+        // If include_subcategories is true and category has children
+        if ($this->include_subcategories) {
+            $category = $this->category;
+
+            // Get all child category IDs
+            $categoryIds = [$this->category_id];
+
+            if ($category && $category->children) {
+                $childIds = $category->children()->pluck('id')->toArray();
+                $categoryIds = array_merge($categoryIds, $childIds);
+            }
+
+            // Sum expenses from parent and all children
+            $query->whereIn('category_id', $categoryIds);
+        } else {
+            // Only count expenses from the specific category
+            $query->where('category_id', $this->category_id);
+        }
+
+        return (float) $query->sum('amount');
     }
 
     public function getRemainingAmount(): float
@@ -80,7 +102,7 @@ class Budget extends Model
         if ($this->amount == 0) {
             return 0;
         }
-        
+
         return ($this->getSpentAmount() / $this->amount) * 100;
     }
 
