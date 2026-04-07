@@ -26,14 +26,12 @@ class Transaction extends Model
         'description',
         'reference_number',
         'metadata',
-        'is_parent_included',
     ];
 
     protected $casts = [
         'amount' => 'decimal:2',
         'transaction_date' => 'date',
         'metadata' => 'array',
-        'is_parent_included' => 'boolean',
     ];
 
     // Relationships
