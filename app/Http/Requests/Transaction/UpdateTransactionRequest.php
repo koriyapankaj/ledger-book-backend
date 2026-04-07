@@ -26,6 +26,7 @@ class UpdateTransactionRequest extends FormRequest
             'description' => ['nullable', 'string', 'max:1000'],
             'reference_number' => ['nullable', 'string', 'max:100'],
             'metadata' => ['nullable', 'array'],
+            'is_parent_included' => ['nullable', 'boolean'],
         ];
     }
 }
