@@ -45,7 +45,11 @@ class BudgetController extends Controller
             'period' => ['required', Rule::in(['daily', 'weekly', 'monthly', 'yearly'])],
             'start_date' => ['required', 'date'],
             'end_date' => ['nullable', 'date', 'after:start_date'],
+            'include_subcategories' => ['sometimes', 'boolean'],
         ]);
+
+        // temp fix
+        $validated['include_subcategories'] = true;
 
         $budget = Budget::create($validated);
 
@@ -77,7 +81,11 @@ class BudgetController extends Controller
             'start_date' => ['sometimes', 'date'],
             'end_date' => ['nullable', 'date', 'after:start_date'],
             'is_active' => ['sometimes', 'boolean'],
+            'include_subcategories' => ['sometimes', 'boolean'],
         ]);
+
+        //temp fix
+        $validated['include_subcategories'] = true;
 
         $budget->update($validated);
 
