@@ -26,6 +26,7 @@ class StoreAccountRequest extends FormRequest
             'icon' => ['nullable', 'string', 'max:50'],
             'include_in_total' => ['nullable', 'boolean'],
             'notes' => ['nullable', 'string', 'max:1000'],
+            'is_active' => ['nullable', 'boolean'],
         ];
     }
 

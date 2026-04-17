@@ -26,6 +26,7 @@ class UpdateAccountRequest extends FormRequest
             'is_active' => ['nullable', 'boolean'],
             'include_in_total' => ['nullable', 'boolean'],
             'notes' => ['nullable', 'string', 'max:1000'],
+            'balance' => ['nullable', 'numeric', 'min:0'],
         ];
     }
 }
