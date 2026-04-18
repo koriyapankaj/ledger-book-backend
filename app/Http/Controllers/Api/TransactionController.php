@@ -25,7 +25,7 @@ class TransactionController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $query = Transaction::with(['account', 'toAccount', 'category', 'contact']);
+        $query = Transaction::with(['account', 'toAccount', 'category', 'contact'])->whereHas('account');
 
         // Filter by type
         if ($request->has('type')) {
