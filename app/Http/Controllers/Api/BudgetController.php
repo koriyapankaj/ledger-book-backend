@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Budget\StoreBudgetRequest;
+use App\Http\Requests\Budget\UpdateBudgetRequest;
 use App\Models\Budget;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 
 class BudgetController extends Controller
 {
@@ -37,19 +38,10 @@ class BudgetController extends Controller
         ]);
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(StoreBudgetRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'category_id' => ['required', 'exists:categories,id'],
-            'amount' => ['required', 'numeric', 'min:0.01'],
-            'period' => ['required', Rule::in(['daily', 'weekly', 'monthly', 'yearly'])],
-            'start_date' => ['required', 'date'],
-            'end_date' => ['nullable', 'date', 'after:start_date'],
-            'include_subcategories' => ['sometimes', 'boolean'],
-        ]);
-
-        // temp fix
-        $validated['include_subcategories'] = true;
+        $validated = $request->validated();
+        $validated['include_subcategories'] = $request->boolean('include_subcategories');
 
         $budget = Budget::create($validated);
 
@@ -72,20 +64,13 @@ class BudgetController extends Controller
         ]);
     }
 
-    public function update(Request $request, Budget $budget): JsonResponse
+    public function update(UpdateBudgetRequest $request, Budget $budget): JsonResponse
     {
-        $validated = $request->validate([
-            'category_id' => ['sometimes', 'exists:categories,id'],
-            'amount' => ['sometimes', 'numeric', 'min:0.01'],
-            'period' => ['sometimes', Rule::in(['daily', 'weekly', 'monthly', 'yearly'])],
-            'start_date' => ['sometimes', 'date'],
-            'end_date' => ['nullable', 'date', 'after:start_date'],
-            'is_active' => ['sometimes', 'boolean'],
-            'include_subcategories' => ['sometimes', 'boolean'],
-        ]);
+        $validated = $request->validated();
 
-        //temp fix
-        $validated['include_subcategories'] = true;
+        if ($request->has('include_subcategories')) {
+            $validated['include_subcategories'] = $request->boolean('include_subcategories');
+        }
 
         $budget->update($validated);
 

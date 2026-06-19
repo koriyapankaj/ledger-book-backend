@@ -37,13 +37,15 @@ class TransactionController extends Controller
             $query->where('account_id', $request->account_id);
         }
 
-        // Filter by category
-        if ($request->has('category_id')) {
+        // Filter by category (single category_id or multiple category_ids[])
+        if ($request->filled('category_ids')) {
+            $query->whereIn('category_id', (array) $request->input('category_ids'));
+        } elseif ($request->filled('category_id')) {
             $query->where('category_id', $request->category_id);
         }
 
         // Filter by contact
-        if ($request->has('contact_id')) {
+        if ($request->filled('contact_id')) {
             $query->where('contact_id', $request->contact_id);
         }
 
