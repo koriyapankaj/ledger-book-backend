@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    'google' => [
+        // The OAuth 2.0 Web Client ID from Google Cloud Console.
+        // Used as the expected "aud" claim when verifying ID tokens.
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+    ],
+
 ];
