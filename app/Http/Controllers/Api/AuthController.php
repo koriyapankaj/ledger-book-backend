@@ -7,6 +7,7 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Services\EmailVerificationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -14,8 +15,13 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
+    public function __construct(private readonly EmailVerificationService $emailVerification)
+    {
+    }
+
     /**
-     * Register a new user
+     * Register a new user. The account starts unverified and must confirm their
+     * email with a code before they can log in, so no token is returned here.
      */
     public function register(RegisterRequest $request): JsonResponse
     {
@@ -27,12 +33,12 @@ class AuthController extends Controller
             'timezone' => $request->timezone ?? 'Asia/Kolkata',
         ]);
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $this->emailVerification->issueCode($user->email, $user->name);
 
         return response()->json([
-            'message' => 'Registration successful',
-            'user' => new UserResource($user),
-            'token' => $token,
+            'message' => 'Registration successful. Please check your email for a verification code.',
+            'email' => $user->email,
+            'requires_verification' => true,
         ], 201);
     }
 
@@ -57,7 +63,16 @@ class AuthController extends Controller
             ], 403);
         }
 
-        // 3. Update last login
+        // 3. Require a verified email before issuing a token
+        if (is_null($user->email_verified_at)) {
+            return response()->json([
+                'message' => 'Please verify your email address before logging in.',
+                'requires_verification' => true,
+                'email' => $user->email,
+            ], 403);
+        }
+
+        // 4. Update last login
         $user->update(['last_login_at' => now()]);
 
         // =========================================================

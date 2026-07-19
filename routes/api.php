@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BudgetController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ContactController;
+use App\Http\Controllers\Api\EmailVerificationController;
 use App\Http\Controllers\Api\SocialAuthController;
 use App\Http\Controllers\Api\TransactionController;
 use Illuminate\Support\Facades\Route;
@@ -13,6 +14,8 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/auth/google', [SocialAuthController::class, 'google']);
+Route::post('/email/verify-code', [EmailVerificationController::class, 'verify']);
+Route::post('/email/resend-code', [EmailVerificationController::class, 'resend']);
 
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
